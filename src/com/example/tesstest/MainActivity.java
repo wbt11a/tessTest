@@ -12,78 +12,124 @@ import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity {
-
+	private String[] files = null;
+	public static final int ENGINE = 0; // default - tesseract only
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     	
-    	//InputStream bitmap = null;
+    	InputStream bitmap = null;
     	//InputStream datafile = null;
     	
     	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-      
         
+        Button clickButton1 = (Button)findViewById(R.id.button1);
+        clickButton1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	//extractAssets();
+            //	String temp = getCacheDir().getAbsolutePath();
+            //	temp+="/tessdata";
+            //	File f = new File(temp);
+            	//File[] list = f.listFiles();
+            	
+                //TextView myTextView = (TextView) findViewById(R.id.textView1);
+            	//myTextView.setText(Arrays.toString(list));
+            }
+        });
+      
+        AssetManager assetManager = this.getAssets();
         try{
         	
-        	String[] files = getAssets().list("tessdata");
-        	TextView myTextView = (TextView) findViewById(R.id.textView1);
-        	myTextView.setText(Arrays.toString(files));
+        	this.files=assetManager.list("tessdata");
+        	bitmap = getAssets().open("test_image.jpg");
+        	extractAssets();
         	
+        	//trimCache(getApplicationContext());
+        	//extractAssets();
         }
         catch (Exception ex){
-        	popDebug(getApplicationContext(), "Error: " + ex.toString());
+        	popDebug(getApplicationContext(), "Error: " + ex.getMessage());
         }
         
+        
+    	
         TessBaseAPI baseApi = new TessBaseAPI();
-        //baseApi.init(dataPath, "eng");
         
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        Bitmap bitmap = BitmapFactory.decodeFile(extractAssets(), options);
+        /*String tessDir = null;
+        for (File t : dir){
+        	if(t.isDirectory())
+        		tessDir = t.getAbsolutePath();
+        }
+        popDebug(getApplicationContext(), "tessdir:" + tessDir);*/
         
-       
+       baseApi.init(getCacheDir().getAbsolutePath(), "eng", ENGINE);
         
+       Bitmap bit = BitmapFactory.decodeStream(bitmap);
+              
         ImageView myImage = (ImageView) findViewById(R.id.imageView1);
-        myImage.setImageBitmap(bitmap);
-        //baseApi.setImage(bitmap);
-        //String recognizedText = baseApi.getUTF8Text();
-       // popDebug(getApplicationContext(),recognizedText);
+        myImage.setImageBitmap(bit);
+        baseApi.setImage(bit);
+        String recognizedText = baseApi.getUTF8Text();
+        TextView myTextView = (TextView) findViewById(R.id.textView1);
+    	myTextView.setText(recognizedText);
+        //popDebug(getApplicationContext(),recognizedText);
         baseApi.end();
         
+        
+        
+    }
+ 
+    
+    public void extractAssets(){
+    	
+    	 File root = new File(getCacheDir() + "/tessdata");
+         if (!root.exists()) {
+             root.mkdirs();
+          }
+    	for(int x=0; x< files.length;x++){
+    		//popDebug(getApplicationContext(),"Extracting " + files[x] + " from assets.");
+    	
+	    	File f = new File(getCacheDir()+"/tessdata/", files[x]);
+	    	if(!f.exists()) try{
+	    	
+	    		InputStream is = getAssets().open("tessdata/"+files[x]);
+	    		
+	    		int size = is.available();
+	    		byte[] buffer = new byte[size];
+	    		is.read(buffer);
+	    		is.close();
+	    		
+	    		FileOutputStream fos = new FileOutputStream(f);
+	    		fos.write(buffer);
+	    		fos.close();
+	    		
+	    	}
+	    	
+	    	catch(Exception e) { throw new RuntimeException(e.getMessage());}
+    	}
+    
     }
     
-    public String extractAssets(){
-    	File f = new File(getCacheDir(), "test_image.jpg");
-    	if(!f.exists()) try{
-    		InputStream is = getAssets().open("test_image.jpg");
-    		int size = is.available();
-    		byte[] buffer = new byte[size];
-    		is.read(buffer);
-    		is.close();
-    		
-    		FileOutputStream fos = new FileOutputStream(f);
-    		fos.write(buffer);
-    		fos.close();
-    	}catch(Exception e) { throw new RuntimeException(e);}
-    	
-    	return f.getPath();
-    }
-    	
+    
     
     
     public static void popDebug(Context context, String message) {
-        Toast.makeText(context, message, 1000).show();
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -104,4 +150,30 @@ public class MainActivity extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    
+    public static void trimCache(Context context) {
+        try {
+           File dir = context.getCacheDir();
+           if (dir != null && dir.isDirectory()) {
+              deleteDir(dir);
+           }
+        } catch (Exception e) {
+           // TODO: handle exception
+        }
+     }
+
+     public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+           String[] children = dir.list();
+           for (int i = 0; i < children.length; i++) {
+              boolean success = deleteDir(new File(dir, children[i]));
+              if (!success) {
+                 return false;
+              }
+           }
+        }
+
+        // The directory is now empty so delete it
+        return dir.delete();
+     }
 }
