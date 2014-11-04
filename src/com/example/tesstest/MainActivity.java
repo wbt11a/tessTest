@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
+import com.googlecode.leptonica.android.*;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.res.AssetManager;
@@ -56,7 +57,8 @@ public class MainActivity extends ActionBarActivity {
         try{
         	
         	this.files=assetManager.list("tessdata");
-        	bitmap = getAssets().open("test_image.jpg");
+        	//bitmap = getAssets().open("test_image.jpg");
+        	bitmap = getAssets().open("YMt9d.png");
         	extractAssets();
         	
         	//trimCache(getApplicationContext());
@@ -67,22 +69,20 @@ public class MainActivity extends ActionBarActivity {
         }
         
         
-    	
+        
         TessBaseAPI baseApi = new TessBaseAPI();
         
-        /*String tessDir = null;
-        for (File t : dir){
-        	if(t.isDirectory())
-        		tessDir = t.getAbsolutePath();
-        }
-        popDebug(getApplicationContext(), "tessdir:" + tessDir);*/
+        
+       
         
        baseApi.init(getCacheDir().getAbsolutePath(), "eng", ENGINE);
         
-       Bitmap bit = BitmapFactory.decodeStream(bitmap);
-              
+        Bitmap bit = BitmapFactory.decodeStream(bitmap);
+        Pix bin_image = Binarize.otsuAdaptiveThreshold(ReadFile.readBitmap(bit));  //binarize with Leptonica
+        Bitmap bit2 = WriteFile.writeBitmap(bin_image);  //convert from Leptonica PIX to Bitmap
+        
         ImageView myImage = (ImageView) findViewById(R.id.imageView1);
-        myImage.setImageBitmap(bit);
+        myImage.setImageBitmap(bit2);
         baseApi.setImage(bit);
         String recognizedText = baseApi.getUTF8Text();
         TextView myTextView = (TextView) findViewById(R.id.textView1);
