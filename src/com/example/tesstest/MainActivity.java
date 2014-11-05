@@ -1,7 +1,6 @@
 package com.example.tesstest;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 
@@ -9,20 +8,15 @@ import com.googlecode.tesseract.android.TessBaseAPI;
 import com.googlecode.leptonica.android.*;
 
 import android.support.v7.app.ActionBarActivity;
-import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -81,11 +75,7 @@ public class MainActivity extends ActionBarActivity {
         
         
         TessBaseAPI baseApi = new TessBaseAPI();
-        	
-        
-       
-        
-       baseApi.init(getCacheDir().getAbsolutePath(), "eng", ENGINE);
+        baseApi.init(getCacheDir().getAbsolutePath(), "eng", ENGINE);
         
         Bitmap bit = BitmapFactory.decodeStream(bitmap);
         Pix bin_image = Binarize.otsuAdaptiveThreshold(ReadFile.readBitmap(bit));  //binarize with Leptonica
@@ -100,11 +90,9 @@ public class MainActivity extends ActionBarActivity {
         //popDebug(getApplicationContext(),recognizedText);
         baseApi.end();
         
-        
-        
     }
  
-
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
