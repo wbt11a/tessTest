@@ -26,14 +26,14 @@ import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity {
-	private String[] files = null;
+	
 	public static final int ENGINE = 0; // default - tesseract only
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     	
     	InputStream bitmap = null;
-    	//InputStream datafile = null;
+    
     	
     	
         super.onCreate(savedInstanceState);
@@ -41,37 +41,47 @@ public class MainActivity extends ActionBarActivity {
         
         Button clickButton1 = (Button)findViewById(R.id.button1);
         clickButton1.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	//extractAssets();
-            //	String temp = getCacheDir().getAbsolutePath();
-            //	temp+="/tessdata";
-            //	File f = new File(temp);
-            	//File[] list = f.listFiles();
+        public void onClick(View v) {
             	
-                //TextView myTextView = (TextView) findViewById(R.id.textView1);
-            	//myTextView.setText(Arrays.toString(list));
+            	String temp = getCacheDir().getAbsolutePath();
+            	temp+="/tessdata";
+            	File f = new File(temp);
+            	File[] list = f.listFiles();
+            	
+                TextView myTextView = (TextView) findViewById(R.id.textView1);
+            	myTextView.setText(Arrays.toString(list));
             }
         });
+        
+        Button clickButton2 = (Button)findViewById(R.id.button2);
+        clickButton2.setOnClickListener(new View.OnClickListener() {
+        public void onClick(View v) {
+            	
+            	MaintenanceClass.trimCache(getApplicationContext());
+            		findViewById(R.id.button1).performClick();
+            }
+        });
+        
       
-        AssetManager assetManager = this.getAssets();
+        
         try{
         	
-        	this.files=assetManager.list("tessdata");
+        	
         	//bitmap = getAssets().open("test_image.jpg");
         	bitmap = getAssets().open("YMt9d.png");
-        	extractAssets();
+        	MaintenanceClass.extractAssets(getApplicationContext());
         	
         	//trimCache(getApplicationContext());
-        	//extractAssets();
+       
         }
         catch (Exception ex){
-        	popDebug(getApplicationContext(), "Error: " + ex.getMessage());
+        	MaintenanceClass.popDebug(getApplicationContext(), "Error: " + ex.getMessage());
         }
         
         
         
         TessBaseAPI baseApi = new TessBaseAPI();
-        
+        	
         
        
         
@@ -94,43 +104,6 @@ public class MainActivity extends ActionBarActivity {
         
     }
  
-    
-    public void extractAssets(){
-    	
-    	 File root = new File(getCacheDir() + "/tessdata");
-         if (!root.exists()) {
-             root.mkdirs();
-          }
-    	for(int x=0; x< files.length;x++){
-    		//popDebug(getApplicationContext(),"Extracting " + files[x] + " from assets.");
-    	
-	    	File f = new File(getCacheDir()+"/tessdata/", files[x]);
-	    	if(!f.exists()) try{
-	    	
-	    		InputStream is = getAssets().open("tessdata/"+files[x]);
-	    		
-	    		int size = is.available();
-	    		byte[] buffer = new byte[size];
-	    		is.read(buffer);
-	    		is.close();
-	    		
-	    		FileOutputStream fos = new FileOutputStream(f);
-	    		fos.write(buffer);
-	    		fos.close();
-	    		
-	    	}
-	    	
-	    	catch(Exception e) { throw new RuntimeException(e.getMessage());}
-    	}
-    
-    }
-    
-    
-    
-    
-    public static void popDebug(Context context, String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -151,29 +124,5 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
     
-    public static void trimCache(Context context) {
-        try {
-           File dir = context.getCacheDir();
-           if (dir != null && dir.isDirectory()) {
-              deleteDir(dir);
-           }
-        } catch (Exception e) {
-           // TODO: handle exception
-        }
-     }
-
-     public static boolean deleteDir(File dir) {
-        if (dir != null && dir.isDirectory()) {
-           String[] children = dir.list();
-           for (int i = 0; i < children.length; i++) {
-              boolean success = deleteDir(new File(dir, children[i]));
-              if (!success) {
-                 return false;
-              }
-           }
-        }
-
-        // The directory is now empty so delete it
-        return dir.delete();
-     }
+   
 }
