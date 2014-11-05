@@ -12,7 +12,9 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/WTF" />
+        android:overScrollMode="ifContentScrolls"
+        android:scrollHorizontally="true"
+        android:text="Empty" />
 
     <ImageView
         android:id="@+id/imageView1"
@@ -28,9 +30,18 @@
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/imageView1"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="19dp"
-        android:text="Extract Assets" />
+        android:layout_marginBottom="30dp"
+        android:text="List Cache" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button1"
+        android:layout_alignBottom="@+id/button1"
+        android:layout_toRightOf="@+id/button1"
+        android:text="Clear Cache" />
 
 </RelativeLayout>
