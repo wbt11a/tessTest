@@ -22,11 +22,14 @@ import android.widget.TextView;
 public class MainActivity extends ActionBarActivity {
 	
 	public static final int ENGINE = 0; // default - tesseract only
+	public InputStream initialImage = null;
+	public TessBaseAPI baseApi = new TessBaseAPI();
+	public Bitmap imageViewPointer = null;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     	
-    	InputStream bitmap = null;
+    	
     
     	
     	
@@ -56,39 +59,48 @@ public class MainActivity extends ActionBarActivity {
             }
         });
         
+        Button clickButton3 = (Button)findViewById(R.id.button3);
+        clickButton3.setOnClickListener(new View.OnClickListener() {
+        public void onClick(View v) {
+        	
+        	try {
+				initialImage = getAssets().open("YMt9d.png");
+			
+        	    Bitmap bit2 = BitmapFactory.decodeStream(initialImage);
+                Pix bin_image = Binarize.otsuAdaptiveThreshold(ReadFile.readBitmap(bit2));  //binarize with Leptonica
+            
+          
+            	Bitmap bit3 = WriteFile.writeBitmap(bin_image);  //convert from Leptonica PIX to Bitmap
+            	ImageView myImage2 = (ImageView)findViewById(R.id.imageView1);
+            	if(bit3!=null)
+            		myImage2.setImageBitmap(bit3);
+            	else
+            		MaintenanceClass.popDebug(getApplicationContext(), "bit3 is null.");
+            }
+            catch(Exception ex){
+            	MaintenanceClass.popDebug(getApplicationContext(), ex.toString());
+            }
+         }
+            
+        });
+        
       
         
         try{
         	
         	
-        	//bitmap = getAssets().open("test_image.jpg");
-        	bitmap = getAssets().open("YMt9d.png");
-        	MaintenanceClass.extractAssets(getApplicationContext());
-        	
-        	//trimCache(getApplicationContext());
+        	initialImage = getAssets().open("YMt9d.png");
+        	Bitmap bit = BitmapFactory.decodeStream(initialImage);
+        	ImageView myImage = (ImageView) findViewById(R.id.imageView1);
+            myImage.setImageBitmap(bit);
+            initialImage.close();
+        	//MaintenanceClass.extractAssets(getApplicationContext());
+    
        
         }
         catch (Exception ex){
         	MaintenanceClass.popDebug(getApplicationContext(), "Error: " + ex.getMessage());
         }
-        
-        
-        
-        TessBaseAPI baseApi = new TessBaseAPI();
-        baseApi.init(getCacheDir().getAbsolutePath(), "eng", ENGINE);
-        
-        Bitmap bit = BitmapFactory.decodeStream(bitmap);
-        Pix bin_image = Binarize.otsuAdaptiveThreshold(ReadFile.readBitmap(bit));  //binarize with Leptonica
-        Bitmap bit2 = WriteFile.writeBitmap(bin_image);  //convert from Leptonica PIX to Bitmap
-        
-        ImageView myImage = (ImageView) findViewById(R.id.imageView1);
-        myImage.setImageBitmap(bit2);
-        baseApi.setImage(bit);
-        String recognizedText = baseApi.getUTF8Text();
-        TextView myTextView = (TextView) findViewById(R.id.textView1);
-    	myTextView.setText(recognizedText);
-        //popDebug(getApplicationContext(),recognizedText);
-        baseApi.end();
         
     }
  
@@ -112,5 +124,15 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
     
+    /*public boolean conductOCR(Context context, int Engine){
+    	 baseApi.init(getCacheDir().getAbsolutePath(), "eng", ENGINE);
+    	 baseApi.setImage();
+         String recognizedText = baseApi.getUTF8Text();
+         TextView myTextView = (TextView) findViewById(R.id.textView1);
+     	myTextView.setText(recognizedText);
+         //popDebug(getApplicationContext(),recognizedText);
+          
+        baseApi.end();
+    }*/
    
 }
