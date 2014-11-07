@@ -1,8 +1,12 @@
 package com.example.tesstest;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -79,5 +83,21 @@ public class MaintenanceClass {
         // The directory is now empty so delete it
         return dir.delete();
      }
+     
+     
+     public static Object deepClone(Object object) {
+    	   try {
+    	     ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    	     ObjectOutputStream oos = new ObjectOutputStream(baos);
+    	     oos.writeObject(object);
+    	     ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+    	     ObjectInputStream ois = new ObjectInputStream(bais);
+    	     return ois.readObject();
+    	   }
+    	   catch (Exception e) {
+    	     e.printStackTrace();
+    	     return null;
+    	   }
+    	 }
 
 }
