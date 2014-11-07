@@ -64,18 +64,18 @@ public class MainActivity extends ActionBarActivity {
         public void onClick(View v) {
         	
         	try {
-				initialImage = getAssets().open("YMt9d.png");
+				initialImage = getAssets().open("skew.jpg");
 			
         	    Bitmap bit2 = BitmapFactory.decodeStream(initialImage);
                 Pix bin_image = Binarize.otsuAdaptiveThreshold(ReadFile.readBitmap(bit2));  //binarize with Leptonica
-            
+        	    float skew = Skew.findSkew(bin_image);
+        	    Pix rotated_img = Rotate.rotate(bin_image, skew);
           
-            	Bitmap bit3 = WriteFile.writeBitmap(bin_image);  //convert from Leptonica PIX to Bitmap
+            	Bitmap bit3 = WriteFile.writeBitmap(rotated_img);  //convert from Leptonica PIX to Bitmap
             	ImageView myImage2 = (ImageView)findViewById(R.id.imageView1);
-            	if(bit3!=null)
+            	
             		myImage2.setImageBitmap(bit3);
-            	else
-            		MaintenanceClass.popDebug(getApplicationContext(), "bit3 is null.");
+            	
             }
             catch(Exception ex){
             	MaintenanceClass.popDebug(getApplicationContext(), ex.toString());
@@ -89,7 +89,7 @@ public class MainActivity extends ActionBarActivity {
         try{
         	
         	
-        	initialImage = getAssets().open("YMt9d.png");
+        	initialImage = getAssets().open("skew.jpg");
         	Bitmap bit = BitmapFactory.decodeStream(initialImage);
         	ImageView myImage = (ImageView) findViewById(R.id.imageView1);
             myImage.setImageBitmap(bit);
