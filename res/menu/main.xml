@@ -2,11 +2,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.tesstest.MainActivity" >
-
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never"/>
+    <item android:id="@+id/item1" android:title="Binarize"></item>
+    <item android:id="@+id/item2" android:title="OCR"></item>
+    <item android:id="@+id/item3" android:title="Gamma"></item>
+    <item android:id="@+id/item4" android:title="Reset"></item>
+    <item android:id="@+id/item5" android:title="Rotate Right"></item>
+    <item android:id="@+id/item6" android:title="Rotate Left"></item>
 
 </menu>

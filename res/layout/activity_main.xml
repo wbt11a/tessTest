@@ -13,13 +13,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scrollHorizontally="true"
-        android:text="@string/textView1" />
+        android:text="Empty" />
 
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button1"
+        android:layout_above="@+id/button3"
         android:layout_alignLeft="@+id/textView1"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/textView1"
@@ -27,29 +27,60 @@
 
     <Button
         android:id="@+id/button1"
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/imageView1"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="30dp"
-        android:text="List Cache" />
+        android:layout_alignTop="@+id/button3"
+        android:layout_centerHorizontal="true"
+        android:text="DeSkew" />
 
     <Button
         android:id="@+id/button2"
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/button1"
         android:layout_alignBottom="@+id/button1"
-        android:layout_toRightOf="@+id/button1"
-        android:text="Clear Cache" />
+        android:layout_alignRight="@+id/imageView1"
+        android:text="Enhance" />
 
     <Button
         android:id="@+id/button3"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button1"
+        android:layout_alignLeft="@+id/imageView1"
         android:layout_alignParentBottom="true"
-        android:text="Binarize" />
+        android:layout_marginBottom="78dp"
+        android:text="Despeckle" />
+
+    <Button
+        android:id="@+id/button4"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button3"
+        android:layout_below="@+id/button1"
+        android:layout_marginTop="16dp"
+        android:text="Camera" />
+
+    <Button
+        android:id="@+id/button5"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/button4"
+        android:layout_centerHorizontal="true"
+        android:text="Adaptive Map" />
+
+    <Button
+        android:id="@+id/button6"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button5"
+        android:layout_alignBottom="@+id/button5"
+        android:layout_alignParentRight="true"
+        android:text="Load" />
 
 </RelativeLayout>

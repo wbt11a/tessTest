@@ -7,9 +7,14 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.os.Environment;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MaintenanceClass {
@@ -99,5 +104,38 @@ public class MaintenanceClass {
     	     return null;
     	   }
     	 }
+     
+     public static String listCache(Context context){
+    	 String temp = context.getCacheDir().getAbsolutePath();
+     	 temp+="/tessdata";
+     	 File f = new File(temp);
+     	 File[] list = f.listFiles();
+     	
+         return list.toString();
+     }
+     
+     public static File saveTemp(Context context, Bitmap mBitmap){
+    	 
+    	   File f3=new File(Environment.getExternalStorageDirectory()+"/demo/");
+           if(!f3.exists()){
+               f3.mkdirs();
+           }       
+           OutputStream outStream = null;
+           File file = new File(Environment.getExternalStorageDirectory() + "/demo/"+"temp"+".png");
+           try {
+        	   outStream = new FileOutputStream(file);
+               mBitmap.compress(Bitmap.CompressFormat.PNG, 85, outStream);
+               outStream.flush();
+               outStream.close();
+
+               //Toast.makeText(context, "Saved", Toast.LENGTH_LONG).show();
+               
+
+           } catch (Exception e) {
+        	   Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+           }
+           return file;
+    	 
+     }
 
 }
