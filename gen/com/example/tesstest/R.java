@@ -1711,6 +1711,7 @@ containing a value of this type.
         public static final int item4=0x7f0d0066;
         public static final int item5=0x7f0d0067;
         public static final int item6=0x7f0d0068;
+        public static final int item7=0x7f0d0069;
         public static final int layout=0x7f0d0059;
         public static final int listMode=0x7f0d000a;
         public static final int list_item=0x7f0d0027;

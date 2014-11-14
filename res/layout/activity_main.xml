@@ -23,6 +23,7 @@
         android:layout_alignLeft="@+id/textView1"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/textView1"
+        android:scaleType="fitXY"
         android:src="@android:drawable/picture_frame" />
 
     <Button

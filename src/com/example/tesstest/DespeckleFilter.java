@@ -1,5 +1,6 @@
 package com.example.tesstest;
 
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 
 
@@ -100,6 +101,16 @@ public class DespeckleFilter extends WholeImageFilter {
 
         public String toString() {
                 return "Blur/Despeckle...";
+        }
+        
+        public static int[] bitmapToIntArray(Bitmap bitmap){
+            final int bitmapWidth = bitmap.getWidth();
+            final int bitmapHeight = bitmap.getHeight();
+        
+            int[] colors = new int[bitmapWidth *  bitmapHeight];
+            bitmap.getPixels(colors, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight);
+        
+            return colors;
         }
 
 }

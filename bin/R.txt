@@ -407,6 +407,7 @@ int id item3 0x7f0d0065
 int id item4 0x7f0d0066
 int id item5 0x7f0d0067
 int id item6 0x7f0d0068
+int id item7 0x7f0d0069
 int id layout 0x7f0d0059
 int id listMode 0x7f0d000a
 int id list_item 0x7f0d0027
