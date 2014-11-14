@@ -1,13 +1,18 @@
 package com.example.tesstest;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +31,11 @@ public class MainActivity extends ActionBarActivity {
 	public File imageFile = null;
 	public TessBaseAPI baseApi = new TessBaseAPI();
 	public Bitmap imageViewPointer = null;
+	public Uri fileUri = null;
+	public List<String> commandQueue = null;
+
+	
+	private static final int CAPTURE_IMAGE_ACTIVITY_REQ = 0;
 
 	public File getImageFile() {
 		return imageFile;
@@ -48,7 +58,7 @@ public class MainActivity extends ActionBarActivity {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
 		Button clickButton1 = (Button) findViewById(R.id.button1);
 		clickButton1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -80,6 +90,7 @@ public class MainActivity extends ActionBarActivity {
 				// setImageFile(MaintenanceClass.saveTemp(getApplicationContext(),
 				// bit3));
 				setImagePointer(bit3);
+				commandQueue.add("b1");  //add button1 to item[0] of commandQueue for future execution.
 
 			}
 		});
@@ -113,9 +124,8 @@ public class MainActivity extends ActionBarActivity {
 					ImageView myImage2 = (ImageView) findViewById(R.id.imageView1);
 
 					myImage2.setImageBitmap(bit3);
-					// setImageFile(MaintenanceClass.saveTemp(getApplicationContext(),
-					// bit3));
 					setImagePointer(bit3);
+					commandQueue.add("b2");
 
 				} catch (Exception ex) {
 					MaintenanceClass.popDebug(getApplicationContext(),
@@ -165,6 +175,7 @@ public class MainActivity extends ActionBarActivity {
 					ImageView myImage2 = (ImageView) findViewById(R.id.imageView1);
 
 					myImage2.setImageBitmap(applied);
+					commandQueue.add("b3");
 
 				} catch (Exception ex) {
 					MaintenanceClass.popDebug(getApplicationContext(),
@@ -180,6 +191,11 @@ public class MainActivity extends ActionBarActivity {
 			public void onClick(View v) {
 
 				try {
+					Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+					File file = Camera.getOutputPhotoFile(getApplicationContext());
+					fileUri = Uri.fromFile(Camera.getOutputPhotoFile(getApplicationContext()));
+					i.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+					startActivityForResult(i, CAPTURE_IMAGE_ACTIVITY_REQ);
 
 				} catch (Exception ex) {
 					MaintenanceClass.popDebug(getApplicationContext(),
@@ -218,9 +234,8 @@ public class MainActivity extends ActionBarActivity {
 					ImageView myImage2 = (ImageView) findViewById(R.id.imageView1);
 
 					myImage2.setImageBitmap(bit3);
-					// setImageFile(MaintenanceClass.saveTemp(getApplicationContext(),
-					// bit3));
 					setImagePointer(bit3);
+					commandQueue.add("b5");
 
 				} catch (Exception ex) {
 					MaintenanceClass.popDebug(getApplicationContext(),
@@ -263,6 +278,7 @@ public class MainActivity extends ActionBarActivity {
 								ImageView myImage = (ImageView) findViewById(R.id.imageView1);
 								myImage.setImageURI(Uri
 										.fromFile(getImageFile()));
+								
 							}
 						});
 
@@ -274,6 +290,7 @@ public class MainActivity extends ActionBarActivity {
 		});
 
 		try {
+			commandQueue = new ArrayList<String>();
 			MaintenanceClass.extractAssets(getApplicationContext());
 
 			setImageFile(new File(getCacheDir().getAbsolutePath()
@@ -325,9 +342,8 @@ public class MainActivity extends ActionBarActivity {
 				ImageView myImage2 = (ImageView) findViewById(R.id.imageView1);
 
 				myImage2.setImageBitmap(bit3);
-				// setImageFile(MaintenanceClass.saveTemp(getApplicationContext(),
-				// bit3));
 				setImagePointer(bit3);
+				commandQueue.add("i1");
 
 			} catch (Exception ex) {
 				MaintenanceClass.popDebug(getApplicationContext(),
@@ -349,7 +365,7 @@ public class MainActivity extends ActionBarActivity {
 				String recognizedText = baseApi.getUTF8Text();
 				TextView myTextView = (TextView) findViewById(R.id.textView1);
 				myTextView.setText(recognizedText);
-				// popDebug(getApplicationContext(),recognizedText);
+				
 
 				baseApi.end();
 			} catch (Exception ex) {
@@ -373,9 +389,8 @@ public class MainActivity extends ActionBarActivity {
 				ImageView myImage2 = (ImageView) findViewById(R.id.imageView1);
 
 				myImage2.setImageBitmap(bit3);
-				// setImageFile(MaintenanceClass.saveTemp(getApplicationContext(),
-				// bit3));
 				setImagePointer(bit3);
+				commandQueue.add("i3");
 
 			} catch (Exception ex) {
 				MaintenanceClass.popDebug(getApplicationContext(),
@@ -394,6 +409,7 @@ public class MainActivity extends ActionBarActivity {
 				myImage2.setImageResource(android.R.color.transparent);
 				TextView myTextView = (TextView) findViewById(R.id.textView1);
 				myTextView.setText("");
+				commandQueue.clear();
 
 			} catch (Exception ex) {
 				MaintenanceClass.popDebug(getApplicationContext(),
@@ -423,11 +439,10 @@ public class MainActivity extends ActionBarActivity {
 				System.gc();
 
 				ImageView myImage2 = (ImageView) findViewById(R.id.imageView1);
-
 				myImage2.setImageBitmap(bit3);
-				// setImageFile(MaintenanceClass.saveTemp(getApplicationContext(),
-				// bit3));
+				myImage2.setScaleType(ImageView.ScaleType.FIT_XY);
 				setImagePointer(bit3);
+				commandQueue.add("i5");
 
 			} catch (Exception ex) {
 				MaintenanceClass.popDebug(getApplicationContext(),
@@ -459,9 +474,8 @@ public class MainActivity extends ActionBarActivity {
 				ImageView myImage2 = (ImageView) findViewById(R.id.imageView1);
 
 				myImage2.setImageBitmap(bit3);
-				// setImageFile(MaintenanceClass.saveTemp(getApplicationContext(),
-				// bit3));
 				setImagePointer(bit3);
+				commandQueue.add("i6");
 
 			} catch (Exception ex) {
 				MaintenanceClass.popDebug(getApplicationContext(),
@@ -471,16 +485,140 @@ public class MainActivity extends ActionBarActivity {
 		}
 
 		if (id == R.id.item7) {
-			try {
+			Bitmap myBitmap = BitmapFactory.decodeFile(getImageFile()
+					.getAbsolutePath());
+			
+			
+			for(int i = 0; i< commandQueue.size(); i++){
+				
+				switch (commandQueue.get(i)) {
+				case "b1":
+					Pix binary = Leptonica.binarize(ReadFile.readBitmap(myBitmap));
+					myBitmap.recycle();
+					System.gc();
+					Pix deskewed = Leptonica.deskew(binary);
+					binary.recycle();
+					System.gc();
+					myBitmap= WriteFile.writeBitmap(deskewed);
+					deskewed.recycle();
+					System.gc();
+					
+					break;
+				case "b2":
+					Pix enhanced = Leptonica.enhance(ReadFile
+							.readBitmap(myBitmap));
+					myBitmap.recycle();
+					System.gc();
+					myBitmap = WriteFile.writeBitmap(enhanced); 
+					enhanced.recycle();
+					System.gc();
+					break;
+				case "b3":
 
-			} catch (Exception ex) {
-				MaintenanceClass.popDebug(getApplicationContext(),
-						ex.toString());
+					int width = myBitmap.getWidth();
+					int height = myBitmap.getHeight();
+					int inPixels[] = DespeckleFilter.bitmapToIntArray(myBitmap);
+					Rect transformedSpace = new Rect();
+					transformedSpace.top = 0;
+					transformedSpace.bottom = myBitmap.getHeight();
+					transformedSpace.left = 0;
+					transformedSpace.right = myBitmap.getWidth();
+
+					DespeckleFilter filter = new DespeckleFilter();
+					int newPixels[] = filter.filterPixels(width, height,
+							inPixels, transformedSpace);
+					myBitmap.recycle();
+					System.gc();
+					myBitmap = Bitmap.createBitmap(newPixels, width,
+							height, Config.ARGB_8888);	
+					break;
+				case "b5":
+					Pix adaptive = Leptonica.adaptiveMap(ReadFile
+							.readBitmap(myBitmap));
+					myBitmap.recycle();
+					System.gc();
+
+					myBitmap = WriteFile.writeBitmap(adaptive);
+					adaptive.recycle();
+					System.gc();
+					
+					break;
+				case "i1":
+					Pix binary2 = Leptonica.binarize(ReadFile.readBitmap(myBitmap));
+					myBitmap.recycle();
+					System.gc();
+					myBitmap = WriteFile.writeBitmap(binary2); 
+					binary2.recycle();
+					System.gc();
+					break;
+				case "i3":
+					myBitmap = Gamma.doGamma(myBitmap, 1.8, 1.8, 1.8);
+					break;
+				case "i5":
+					Pix rr = Leptonica.rotateRight(ReadFile.readBitmap(myBitmap));
+					myBitmap.recycle();
+					System.gc();
+					myBitmap = WriteFile.writeBitmap(rr); 
+					rr.recycle();
+					System.gc();
+					break;
+				case "i6":
+					Pix rl = Leptonica.rotateLeft(ReadFile.readBitmap(myBitmap));
+					myBitmap.recycle();
+					System.gc();
+					myBitmap = WriteFile.writeBitmap(rl); 
+					rl.recycle();
+					System.gc();			
+					break;
+				default:
+					
+					break;
+				
+				
+				}
 			}
+			final Bitmap temp = myBitmap;
+			new Thread(new Runnable() {
+		        public void run() {
+		        	MaintenanceClass.saveTemp(getApplicationContext(), temp);
+		        	
+		        }
+		    }).start();
+			
 			return true;
+			//write file
 		}
 
 		return super.onOptionsItemSelected(item);
 	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		  if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQ) {
+		    if (resultCode == RESULT_OK) {
+		      Uri photoUri = null;
+		      if (data == null) {
+		        // A known bug here! The image should have saved in fileUri
+		        MaintenanceClass.popDebug(getApplicationContext(), "Image saved successfully");
+		   
+		        photoUri = fileUri;
+		        
+		      } else {
+		        photoUri = data.getData();
+		        MaintenanceClass.popDebug(getApplicationContext(), "Image saved successfully in: " + data.getData());
+		      }
+		      Bitmap newBitmap = Camera.showPhoto(getApplicationContext(), photoUri);  
+		      
+		      ImageView myImage2 = (ImageView) findViewById(R.id.imageView1);
+		      myImage2.setImageBitmap(newBitmap);
+		      setImagePointer(newBitmap);  //scaled image
+		      setImageFile(new File(photoUri.getPath()));  //unscaled image
+		      
+		    } else if (resultCode == RESULT_CANCELED) {
+		    	MaintenanceClass.popDebug(getApplicationContext(), "Cancelled");
+		    } else {
+		    	MaintenanceClass.popDebug(getApplicationContext(), "Callout for image failed");
+		    }
+		  }
+		}
 
 }

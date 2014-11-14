@@ -1,6 +1,9 @@
 package com.example.tesstest;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,15 +11,35 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 public class Camera {
 
+	private static final String TAG = "CallCamera";
+	
 	public static Bitmap showPhoto(Context context, String photoUri) {
 
 		Bitmap scaled = null;
 		File imageFile = new File(photoUri);
+
+		if (imageFile.exists()) {
+			Bitmap bitmap = BitmapFactory.decodeFile(imageFile
+					.getAbsolutePath());
+			Bitmap d = new BitmapDrawable(context.getResources(), bitmap)
+					.getBitmap();
+			int nh = (int) (d.getHeight() * (512.0 / d.getWidth()));
+			scaled = Bitmap.createScaledBitmap(d, 512, nh, true);
+		}
+		return scaled;
+	}
+	
+	public static Bitmap showPhoto(Context context, Uri photoUri) {
+
+		Bitmap scaled = null;
+		File imageFile = new File(photoUri.getPath());
 
 		if (imageFile.exists()) {
 			Bitmap bitmap = BitmapFactory.decodeFile(imageFile
@@ -80,4 +103,19 @@ public class Camera {
 		myImage2.setImageBitmap(bitmap);
 	}
 
+	public static File getOutputPhotoFile(Context context) {
+		  File directory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/demo");
+		  MaintenanceClass.popDebug(context, "Debug:  "+ directory.getAbsolutePath());
+		  if (!directory.exists()) {
+		    if (!directory.mkdirs()) {
+		      Log.e(TAG, "Failed to create storage directory.");
+		      return null;
+		    }
+		  }
+		  String timeStamp = new SimpleDateFormat("yyyMMdd_HHmmss", Locale.US).format(new Date());
+		  return new File(directory.getPath() + File.separator + "IMG_"  
+		                    + timeStamp + ".jpg");
+		}
+	
+	
 }
